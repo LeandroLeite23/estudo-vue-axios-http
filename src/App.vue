@@ -23,7 +23,9 @@
 			<b-list-group-item v-for="(usuario, id) in usuarios" :key="id">
 				<strong>Nome: </strong>{{ usuario.nome }} <br>
 				<strong>Email: </strong>{{ usuario.email }} <br>
-				<strong>ID: </strong>{{ usuario.id }}
+				<strong>ID: </strong>{{ id }}
+				<b-button size="sm" variant="primary">Editar</b-button>
+				<b-button size="sm" variant="danger">Excluir</b-button>
 			</b-list-group-item>
 		</b-list-group>
 	</div>
