@@ -23,9 +23,11 @@
 			<b-list-group-item v-for="(usuario, id) in usuarios" :key="id">
 				<strong>Nome: </strong>{{ usuario.nome }} <br>
 				<strong>Email: </strong>{{ usuario.email }} <br>
-				<strong>ID: </strong>{{ id }}
-				<b-button size="sm" variant="primary">Editar</b-button>
-				<b-button size="sm" variant="danger">Excluir</b-button>
+				<strong>ID: </strong>{{ id }} <br>
+				<b-button variant="warning" size="lg"
+				@click="carregar(id)">Carregar</b-button>
+				<b-button variant="danger" size="lg" class="ml-2"
+				@click="excluir(id)">Excluir</b-button>
 			</b-list-group-item>
 		</b-list-group>
 	</div>
@@ -37,6 +39,7 @@ export default {
 	data(){
 		return {
 			usuarios:[],
+			id: null,
 			usuario:{
 				nome:'',
 				email:''
@@ -44,12 +47,26 @@ export default {
 		}
 	},
 	methods: {
+		limpar(){
+			this.usuario.nome  = ''
+			this.usuario.email = ''
+			this.id = null
+		},
+		carregar(id){
+			this.id = id
+			this.usuario = {...this.usuarios[id]}
+		},
+		excluir(id){
+			this.$http.delete(`/usuarios/${id}.json`)
+			.then(() => this.obterUsuarios())
+		},
 		salvar(){
-			this.$http.post('usuarios.json', this.usuario)
-			.then(resp => {
-				this.usuario.nome = ''
-				this.usuario.email = ''
-			})
+			const metodo = this.id ? 'patch' : 'post'
+			const finalUrl = this.id ? `/${this.id}.json` : '.json'
+			this.$http[metodo](`/usuarios${finalUrl}`, this.usuario)
+			.then(() => this.limpar())
+
+			this.obterUsuarios()
 		},
 		obterUsuarios(){
 			this.$http.get('usuarios.json')
